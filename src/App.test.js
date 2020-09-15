@@ -1,8 +1,15 @@
 import React from 'react'
-import { render , screen } from '@testing-library/react'
-import Episodes from './Episodes'
+import { render , screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import App from './App'
 
-const episodesData = [
+
+import { fetchShow } from './api/fetchShow'
+
+
+jest.mock('./api/fetchShow')
+
+const episodesData = {data: [
     {
         id: 553946,
         url: "http://www.tvmaze.com/episodes/553946/stranger-things-1x01-chapter-one-the-vanishing-of-will-byers",
@@ -66,18 +73,22 @@ const episodesData = [
         }
         }
     },
-]
+]}
 
-test('Renders without error', () => {
-    render(<Episodes episodes={ [ ] }/>)
+test('render without error', () => {
+    render(<App />)
 })
 
-test('Rerenders with new props', () => {
-    const { rerender } = render(<Episodes episodes = { [ ] }/>)
+test('render episodes when API is called', async() => {
+    fetchShow.mockResolvedValue(episodesData)
 
-    rerender(<Episodes episodes={episodesData}/>)
+    render(<App />)
 
-    const episodeSlide = screen.getAllByTestId(/episode/i)
+    // const dropDown = screen.getByTestId(/mock/i)
 
-    expect(episodeSlide).toHaveLength(3)
+    // userEvent.click(dropDown)
+
+    // await waitFor(() => screen.getAllByTestId(/episode/i))
+
+    // expect(screen.getAllByTestId(/episode/i)).toHaveLength(3)
 })
